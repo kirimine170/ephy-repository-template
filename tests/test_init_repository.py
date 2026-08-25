@@ -23,6 +23,34 @@ class InitRepositoryTests(unittest.TestCase):
             self.repository,
             ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"),
         )
+        (self.repository / ".ephy" / "project.yaml").write_text(
+            """schema_version: 1
+
+project:
+  id: "ephy-repository-template"
+  family: "ephy"
+  type: "template"
+  status: "active"
+  visibility: "private"
+  description: "Test template identity"
+
+relations:
+  parent: "ephy"
+  depends_on: []
+  integrates_with: []
+  runs_on: []
+
+data_policy:
+  classification: "internal"
+  personal_data_in_git: "prohibited"
+  secrets_in_git: "prohibited"
+""",
+            encoding="utf-8",
+        )
+        (self.repository / "README.md").write_text(
+            "<!-- ephy-template-source -->\n# Ephy Repository Template\n",
+            encoding="utf-8",
+        )
 
     def tearDown(self) -> None:
         self.temporary_directory.cleanup()

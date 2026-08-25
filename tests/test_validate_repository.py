@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -52,7 +53,7 @@ class ValidateRepositoryTests(unittest.TestCase):
         metadata_path = self.repository / ".ephy" / "project.yaml"
         metadata = metadata_path.read_text(encoding="utf-8")
         metadata_path.write_text(
-            metadata.replace('type: "template"', 'type: "unknown"'),
+            re.sub(r'^  type: .+$', '  type: "unknown"', metadata, count=1, flags=re.MULTILINE),
             encoding="utf-8",
         )
         result = self.run_validator()
@@ -76,8 +77,16 @@ class ValidateRepositoryTests(unittest.TestCase):
     def test_self_parent_is_detected(self) -> None:
         metadata_path = self.repository / ".ephy" / "project.yaml"
         metadata = metadata_path.read_text(encoding="utf-8")
+        project_id = re.search(r'^  id: "([^"]+)"$', metadata, re.MULTILINE)
+        self.assertIsNotNone(project_id)
         metadata_path.write_text(
-            metadata.replace('parent: "ephy"', 'parent: "ephy-repository-template"'),
+            re.sub(
+                r'^  parent: .+$',
+                f'  parent: "{project_id.group(1)}"',
+                metadata,
+                count=1,
+                flags=re.MULTILINE,
+            ),
             encoding="utf-8",
         )
         result = self.run_validator()
