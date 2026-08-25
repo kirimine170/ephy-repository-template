@@ -53,7 +53,7 @@ python3 scripts/init_repository.py \
   --classification restricted
 ```
 
-Optional repeatable flags are `--depends-on`，`--integrates-with`，and `--runs-on`．Use `--parent` and `--status` when their defaults of `ephy` and `active` are not appropriate．A first initialization replaces the template identity．Reinitializing an already initialized repository is rejected unless `--force` is explicitly supplied．
+Optional repeatable flags are `--depends-on`，`--integrates-with`，and `--runs-on`．Use `--parent` and `--status` when their defaults of `ephy` and `active` are not appropriate．For the single ecosystem root meta project，use `--no-parent`; it generates `relations.parent: null` and cannot be combined with `--parent`．A first initialization replaces the template identity．Reinitializing an already initialized repository is rejected unless `--force` is explicitly supplied．
 
 The initializer performs no network requests，GitHub API calls，or Git remote changes．After initialization，review `.ephy/project.yaml` and `README.md` before adding implementation-specific files．
 
